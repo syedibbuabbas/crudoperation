@@ -7,7 +7,15 @@ const EditContacts = () => {
   const { contactId } = useParams;
   const [state, setState] = useState({
     loading: false,
-    contact: {},
+    contacts: {
+      name: "",
+      photo: "",
+      mobile: "",
+      email: "",
+      company: "",
+      title: "",
+      groupId: "",
+    },
     groups: [],
     errorMessage: "",
   });
@@ -19,7 +27,7 @@ const EditContacts = () => {
       setState({
         ...state,
         loading: false,
-        contact: response.data,
+        contacts: response.data,
         groups: groupResponse.data,
       });
     } catch (error) {
@@ -30,11 +38,20 @@ const EditContacts = () => {
       });
     }
   });
+  const updateInput = (e) => {
+    setState({
+      ...state,
+      contacts: {
+        ...state.contacts,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
   const submitForm = async (e) => {
     e.prevent.default();
     try {
       const response = await ContactService.updateContact(
-        state.contact,
+        state.contacts,
         contactId
       );
       if (response) {
@@ -46,7 +63,7 @@ const EditContacts = () => {
     }
   };
 
-  const { loading, contact, errorMessage, groups } = state;
+  const { contacts, groups } = state;
 
   return (
     <div>
@@ -73,6 +90,10 @@ const EditContacts = () => {
                 <form onSubmit={submitForm}>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="name"
+                      value={contacts.name}
+                      onChange={updateInput}
                       type="text"
                       className="form-control"
                       placeholder="Name"
@@ -80,6 +101,10 @@ const EditContacts = () => {
                   </div>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="mobile"
+                      value={contacts.mobile}
+                      onChange={updateInput}
                       type="number"
                       className="form-control"
                       placeholder="Number"
@@ -87,6 +112,10 @@ const EditContacts = () => {
                   </div>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="photo"
+                      value={contacts.photo}
+                      onChange={updateInput}
                       type="text"
                       className="form-control"
                       placeholder="Photo URL"
@@ -94,6 +123,10 @@ const EditContacts = () => {
                   </div>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="email"
+                      value={contacts.email}
+                      onChange={updateInput}
                       type="email"
                       className="form-control"
                       placeholder="Email"
@@ -101,6 +134,10 @@ const EditContacts = () => {
                   </div>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="company"
+                      value={contacts.company}
+                      onChange={updateInput}
                       type="text"
                       className="form-control"
                       placeholder="Company Name"
@@ -108,14 +145,32 @@ const EditContacts = () => {
                   </div>
                   <div className="mb-2">
                     <input
+                      required={true}
+                      name="title"
+                      value={contacts.title}
+                      onChange={updateInput}
                       type="text"
                       className="form-control"
                       placeholder="title"
                     />
                   </div>
                   <div className="mb-2">
-                    <select className="form-control">
+                    <select
+                      required={true}
+                      name="groupId"
+                      value={contacts.groupId}
+                      onChange={updateInput}
+                      className="form-control"
+                    >
                       <option value="">Select Group</option>
+                      {groups.length > 0 &&
+                        groups.map((group) => {
+                          return (
+                            <option key={group.id} value={group.id}>
+                              {group.name}
+                            </option>
+                          );
+                        })}
                     </select>
                   </div>
                   <div className="mb-2">
@@ -131,7 +186,7 @@ const EditContacts = () => {
                 </form>
               </div>
               <div className="col-md-6">
-                <img src={contact.photo} alt="" className="contact-img" />
+                <img src={contacts.photo} alt="" className="contact-img" />
               </div>
             </div>
           </div>

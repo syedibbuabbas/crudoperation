@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import { ContactService } from "./ContactService";
 
 const ContactList = () => {
+  const [query, setQuery] = useState({
+    text: "",
+  });
   const [state, setState] = useState({
     loading: false,
-    contacts: [],
+    contacts: {},
+    filteredContact: [],
     errorMessage: "",
   });
-  useEffect(() => async () => {
+  const fetchContacts = async () => {
     try {
       setState({ ...state, loading: true });
       const response = await ContactService.getAllContacts();
@@ -16,9 +20,54 @@ const ContactList = () => {
     } catch (error) {
       setState({ ...state, loading: false, errorMessage: error.message });
     }
-  });
+  };
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+  // useEffect(() => async () => {
+  //   try {
+  //     setState({ ...state, loading: true });
+  //     const response = await ContactService.getAllContacts();
+  //     setState({
+  //       ...state,
+  //       loading: false,
+  //       contacts: response.data,
+  //       filteredContact: response.data,
+  //     });
+  //   } catch (error) {
+  //     setState({ ...state, loading: false, errorMessage: error.message });
+  //   }
+  // });
+  const clickDelete = async (contactId) => {
+    try {
+      const response = await ContactService.deleteContact(contactId);
+      if (response) {
+        setState({ ...state, loading: true });
+        const response = await ContactService.getAllContacts();
+        setState({
+          ...state,
+          loading: false,
+          contacts: response.data,
+          filteredContact: response.data,
+        });
+      }
+    } catch (error) {
+      setState({ ...state, loading: false, errorMessage: error.message });
+    }
+  };
 
-  const { loading, contacts, errorMessage } = state;
+  const { filteredContact } = state;
+
+  const SearchContacts = (e) => {
+    setQuery({ ...query, text: e.target.value });
+    const cont = state.contacts.filter((contact) => {
+      return contact.name.toLowerCase().includes(e.target.value.toLowerCase());
+    });
+    setState({
+      ...state,
+      filteredContact: cont,
+    });
+  };
   return (
     <div>
       <section className="contact-search p-3">
@@ -33,6 +82,7 @@ const ContactList = () => {
                     New
                   </Link>
                 </p>
+
                 <p className="fst-italic">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -51,6 +101,9 @@ const ContactList = () => {
                   <div className="col">
                     <div className="mb-2">
                       <input
+                        name="text"
+                        value={query.text}
+                        onChange={SearchContacts}
                         type="text"
                         className="form-control"
                         placeholder="Search Names"
@@ -76,8 +129,8 @@ const ContactList = () => {
       <section className="contact-list">
         <div className="container">
           <div className="row">
-            {contacts.length > 0 &&
-              contacts.map((contact) => {
+            {filteredContact.length > 0 &&
+              filteredContact.map((contact) => {
                 return (
                   <div className="col-md-6" key={contact.id}>
                     <div className="card my-2">
@@ -120,18 +173,21 @@ const ContactList = () => {
                       align-items-center "
                           >
                             <Link
-                              to={"/contact/view/{contactId}"}
+                              to={`/contact/view/${contact.id}`}
                               className="btn btn-warning my-1"
                             >
                               <i className="fa fa-eye" />
                             </Link>
                             <Link
-                              to={"/contact/edit/{contactId}"}
+                              to={`/contact/edit/${contact.id}`}
                               className="btn btn-primary my-1"
                             >
                               <i className="fa fa-edit" />
                             </Link>
-                            <button className="btn btn-danger my-1">
+                            <button
+                              className="btn btn-danger my-1"
+                              onClick={() => clickDelete(contact.id)}
+                            >
                               <i className="fa fa-trash" />
                             </button>
                           </div>

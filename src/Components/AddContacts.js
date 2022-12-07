@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ContactService } from "./ContactService";
-import Spinner from "./Spinner";
 
 const AddContacts = () => {
   const navigate = useNavigate();
@@ -19,6 +18,15 @@ const AddContacts = () => {
     groups: [],
     errorMessage: "",
   });
+  const updateInput = (e) => {
+    setState({
+      ...state,
+      contact: {
+        ...state.contact,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
   useEffect(() => async () => {
     try {
       setState({ ...state, loading: true });
@@ -38,14 +46,9 @@ const AddContacts = () => {
       navigate("/contacts/add", { replace: false });
     }
   };
-  const { loading, groups, errorMessage, contact } = state;
+  const { groups, contact } = state;
   return (
     <div>
-      {/* {
-        loading ? <Spinner /> : <div>
-
-        </div>
-      } */}
       <section className="add-contact p-3">
         <div className="container">
           <div className="row">
@@ -67,6 +70,10 @@ const AddContacts = () => {
               <form onSubmit={submitForm}>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="name"
+                    value={contact.name}
+                    onChange={updateInput}
                     type="text"
                     className="form-control"
                     placeholder="Name"
@@ -74,6 +81,10 @@ const AddContacts = () => {
                 </div>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="mobile"
+                    value={contact.mobile}
+                    onChange={updateInput}
                     type="number"
                     className="form-control"
                     placeholder="Number"
@@ -81,6 +92,10 @@ const AddContacts = () => {
                 </div>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="photo"
+                    value={contact.photo}
+                    onChange={updateInput}
                     type="text"
                     className="form-control"
                     placeholder="Photo URL"
@@ -88,6 +103,10 @@ const AddContacts = () => {
                 </div>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="email"
+                    value={contact.email}
+                    onChange={updateInput}
                     type="email"
                     className="form-control"
                     placeholder="Email"
@@ -95,6 +114,10 @@ const AddContacts = () => {
                 </div>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="company"
+                    value={contact.company}
+                    onChange={updateInput}
                     type="text"
                     className="form-control"
                     placeholder="Company Name"
@@ -102,14 +125,32 @@ const AddContacts = () => {
                 </div>
                 <div className="mb-2">
                   <input
+                    required={true}
+                    name="title"
+                    value={contact.title}
+                    onChange={updateInput}
                     type="text"
                     className="form-control"
                     placeholder="title"
                   />
                 </div>
                 <div className="mb-2">
-                  <select className="form-control">
+                  <select
+                    required={true}
+                    name="groupId"
+                    value={contact.groupId}
+                    onChange={updateInput}
+                    className="form-control"
+                  >
                     <option value="">Select Group</option>
+                    {groups.length > 0 &&
+                      groups.map((group) => {
+                        return (
+                          <option key={group.id} value={group.id}>
+                            {group.name}
+                          </option>
+                        );
+                      })}
                   </select>
                 </div>
                 <div className="mb-2">

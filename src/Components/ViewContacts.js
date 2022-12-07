@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ContactService } from "./ContactService";
-import Spinner from "./Spinner";
 
 const ViewContacts = () => {
-  // const { contactId } = useParams;
-  // const [state, setState] = useState({
-  //   loading: false,
-  //   contact: {},
-  //   errorMessage: "",
-  //   group : {}
-  // });
-  // useEffect(() => async () => {
-  //   try {
-  //     setState({ ...state, loading: true });
-  //     const response = await ContactService.getAllContacts(contactId);
-  //     const groupResponse = await ContactService.getGroup(response.data)
-  //     console.log(response.data);
-  //     setState({ ...state, loading: false, contact: response.data, group: groupResponse.data });
-  //   } catch (error) {
-  //     setState({ ...state, loading: false, errorMessage: error.message });
-  //   }
-  // });
-  // const { loading, contact, errorMessage, group } = state;
+  const { contactId } = useParams;
+  const [state, setState] = useState({
+    loading: false,
+    contacts: [],
+    errorMessage: "",
+    group: [],
+  });
+  useEffect(() => async () => {
+    try {
+      setState({ ...state, loading: true });
+      const response = await ContactService.getContact(contactId);
+      const groupResponse = await ContactService.getGroup(response.data);
+      setState({
+        ...state,
+        loading: false,
+        contacts: response.data,
+        group: groupResponse.data,
+      });
+    } catch (error) {
+      setState({ ...state, loading: false, errorMessage: error.message });
+    }
+  });
+  const { contacts, group } = state;
   return (
     <div>
+      <h2>{contactId}</h2>
       <section>
         <div className="view-contact-intro p-3">
           <div className="container">
@@ -46,51 +50,46 @@ const ViewContacts = () => {
           </div>
         </div>
       </section>
-      {/* {
-        loading ? <Spinner/> :<div>
-
-        </div>
-      } */}
-      <section className="view-contact mt-3">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-md-4">
-              <img
-                src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
-                alt=""
-                className="contact-img"
-              />
-            </div>
-            <div className="col-md-8">
-              <ul className="list-group">
-                <li className="list-group-item list-group-item-action">
-                  Name:<span className="fw-bold">Raj Kumar</span>
-                </li>
-                <li className="list-group-item list-group-item-action">
-                  Mobile Number :<span className="fw-bold">9876543210</span>
-                </li>
-                <li className="list-group-item list-group-item-action">
-                  Mail ID :<span className="fw-bold">Raj@gmail.com</span>
-                </li>
-                <li className="list-group-item list-group-item-action">
-                  Company Name :<span className="fw-bold">Zoho</span>
-                </li>
-                <li className="list-group-item list-group-item-action">
-                  Title :<span className="fw-bold">Mr.</span>
-                </li>
-                <li className="list-group-item list-group-item-action">
-                  Group :<span className="fw-bold">A Group</span>
-                </li>
-              </ul>
-            </div>
-            <div className="col-md-2">
-              <Link to={"/contact/list"} className="btn btn-info">
-                Back
-              </Link>
+      {Object.keys(contacts).length > 0 && Object.keys(group).length > 0 && (
+        <section className="view-contact mt-3">
+          <div className="container">
+            <div className="row align-items-center">
+              <div className="col-md-4">
+                <img src={contacts.photo} alt="" className="contact-img" />
+              </div>
+              <div className="col-md-8">
+                <ul className="list-group">
+                  <li className="list-group-item list-group-item-action">
+                    Name:<span className="fw-bold">{contacts.name}</span>
+                  </li>
+                  <li className="list-group-item list-group-item-action">
+                    Mobile Number :
+                    <span className="fw-bold">{contacts.phone}</span>
+                  </li>
+                  <li className="list-group-item list-group-item-action">
+                    Mail ID :<span className="fw-bold">{contacts.email}</span>
+                  </li>
+                  <li className="list-group-item list-group-item-action">
+                    Company Name :
+                    <span className="fw-bold">{contacts.company}</span>
+                  </li>
+                  <li className="list-group-item list-group-item-action">
+                    Title :<span className="fw-bold">{contacts.title}</span>
+                  </li>
+                  <li className="list-group-item list-group-item-action">
+                    Group :<span className="fw-bold">{group.name}</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="col-md-2">
+                <Link to={"/contact/list"} className="btn btn-info">
+                  Back
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };

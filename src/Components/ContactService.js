@@ -7,34 +7,34 @@ export class ContactService {
     return axios.get(dataURL);
   }
 
-  //   static getContact(contactId) {
-  //     const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
-  //     return axios.get(dataURL);
-  //   }
+  static getContact(contactId) {
+    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+    return axios.get(dataURL);
+  }
 
-  //   static createContact(contact) {
-  //     const dataURL = `${this.serverURL}/contacts`;
-  //     return axios.post(dataURL, contact);
-  //   }
+  static createContact(contact) {
+    const dataURL = `${this.serverURL}/contacts`;
+    return axios.post(dataURL, contact);
+  }
 
-  //   static getGroups() {
-  //     const dataURL = `${this.serverURL}/groups`;
-  //     return axios.get(dataURL);
-  //   }
+  static getGroups() {
+    const dataURL = `${this.serverURL}/groups`;
+    return axios.get(dataURL);
+  }
 
-  //   static getGroup(contact) {
-  //     const groupId = contact.groupId;
-  //     const dataURL = `${this.serverURL}/groups/${groupId}`;
-  //     return axios.get(dataURL);
-  //   }
+  static getGroup(contact) {
+    const groupId = contact.groupId;
+    const dataURL = `${this.serverURL}/groups/${groupId}`;
+    return axios.get(dataURL);
+  }
 
-  //   static updatecontact(contact, contactId) {
-  //     const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
-  //     return axios.put(dataURL, contact);
-  //   }
+  static updatecontact(contact, contactId) {
+    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+    return axios.put(dataURL, contact);
+  }
 
-  //   static deleteContact(contactId) {
-  //     const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
-  //     return axios.delete(dataURL);
-  //   }
+  static deleteContact(contactId) {
+    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+    return axios.delete(dataURL);
+  }
 }
