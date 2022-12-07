@@ -8,7 +8,7 @@ export class ContactService {
   }
 
   static getContact(contactId) {
-    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+    const dataURL = `${this.serverURL}/contacts/${contactId}`;
     return axios.get(dataURL);
   }
 
@@ -28,13 +28,13 @@ export class ContactService {
     return axios.get(dataURL);
   }
 
-  static updatecontact(contact, contactId) {
-    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+  static updateContact(contact, contactId) {
+    const dataURL = `${this.serverURL}/contacts/${contactId}`;
     return axios.put(dataURL, contact);
   }
 
   static deleteContact(contactId) {
-    const dataURL = `${this.serverURL}/contacts/ ${contactId}`;
+    const dataURL = `${this.serverURL}/contacts/${contactId}`;
     return axios.delete(dataURL);
   }
 }

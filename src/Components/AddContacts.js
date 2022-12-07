@@ -18,6 +18,19 @@ const AddContacts = () => {
     groups: [],
     errorMessage: "",
   });
+
+  const fetchGroups = async () => {
+    try {
+      setState({ ...state, loading: true });
+      const response = await ContactService.getGroups();
+      setState({ ...state, loading: false, groups: response.data });
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
+
   const updateInput = (e) => {
     setState({
       ...state,
@@ -27,26 +40,22 @@ const AddContacts = () => {
       },
     });
   };
-  useEffect(() => async () => {
-    try {
-      setState({ ...state, loading: true });
-      const response = await ContactService.getGroups();
-      setState({ ...state, loading: false, groups: response.data });
-    } catch (error) {}
-  });
+
   const submitForm = async (e) => {
-    e.prevent.default();
+    e.preventDefault();
     try {
       const response = await ContactService.createContact(state.contact);
       if (response) {
-        navigate("/contacts/list", { replace: true });
+        navigate("/contact/list", { replace: true });
       }
     } catch (error) {
       setState({ ...state, loading: false, errorMessage: error.message });
-      navigate("/contacts/add", { replace: false });
+      navigate("/contact/add", { replace: false });
     }
   };
+
   const { groups, contact } = state;
+
   return (
     <div>
       <section className="add-contact p-3">

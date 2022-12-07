@@ -3,14 +3,15 @@ import { Link, useParams } from "react-router-dom";
 import { ContactService } from "./ContactService";
 
 const ViewContacts = () => {
-  const { contactId } = useParams;
+  const { contactId } = useParams();
   const [state, setState] = useState({
     loading: false,
-    contacts: [],
+    contacts: {},
     errorMessage: "",
-    group: [],
+    group: {},
   });
-  useEffect(() => async () => {
+
+  const fetchContact = async () => {
     try {
       setState({ ...state, loading: true });
       const response = await ContactService.getContact(contactId);
@@ -24,7 +25,12 @@ const ViewContacts = () => {
     } catch (error) {
       setState({ ...state, loading: false, errorMessage: error.message });
     }
-  });
+  };
+
+  useEffect(() => {
+    fetchContact();
+  }, []);
+
   const { contacts, group } = state;
   return (
     <div>

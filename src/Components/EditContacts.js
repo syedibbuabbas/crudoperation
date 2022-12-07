@@ -4,7 +4,7 @@ import { ContactService } from "./ContactService";
 
 const EditContacts = () => {
   const navigate = useNavigate();
-  const { contactId } = useParams;
+  const { contactId } = useParams();
   const [state, setState] = useState({
     loading: false,
     contacts: {
@@ -19,7 +19,8 @@ const EditContacts = () => {
     groups: [],
     errorMessage: "",
   });
-  useEffect(() => async () => {
+
+  const fetchContact = async () => {
     try {
       setState({ ...state, loading: true });
       const response = await ContactService.getContact(contactId);
@@ -28,7 +29,7 @@ const EditContacts = () => {
         ...state,
         loading: false,
         contacts: response.data,
-        groups: groupResponse.data,
+        groups: [groupResponse.data],
       });
     } catch (error) {
       setState({
@@ -37,7 +38,12 @@ const EditContacts = () => {
         errorMessage: error.message,
       });
     }
-  });
+  };
+
+  useEffect(() => {
+    fetchContact();
+  }, []);
+
   const updateInput = (e) => {
     setState({
       ...state,
@@ -47,19 +53,25 @@ const EditContacts = () => {
       },
     });
   };
+
   const submitForm = async (e) => {
-    e.prevent.default();
+    e.preventDefault();
+
     try {
       const response = await ContactService.updateContact(
         state.contacts,
         contactId
       );
+
+      console.log(response);
+
       if (response) {
-        navigate("/contacts/list", { replace: true });
+        navigate("/contact/list", { replace: true });
       }
     } catch (error) {
+      console.log(error);
       setState({ ...state, loading: false, errorMessage: error.message });
-      navigate(`/contacts/edit${contactId}`, { replace: false });
+      navigate(`/contact/edit/${contactId}`, { replace: false });
     }
   };
 
@@ -174,11 +186,9 @@ const EditContacts = () => {
                     </select>
                   </div>
                   <div className="mb-2">
-                    <input
-                      type="submit"
-                      className="btn btn-primary"
-                      value="Update"
-                    />
+                    <button type="submit" className="btn btn-primary">
+                      Update
+                    </button>
                     <Link to={"/contact/list"} className="btn btn-dark ms-2">
                       Cancel
                     </Link>
